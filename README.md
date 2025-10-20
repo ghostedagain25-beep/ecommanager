@@ -1,18 +1,24 @@
-
-
 # EcomManager
 
-A comprehensive multi-user e-commerce management platform with Shopify integration, built with React and Node.js.
+A multi-tenant e-commerce operations manager for multiple websites with first-class support for both WooCommerce (WordPress) and Shopify. Built with React (Vite) and Node.js (Express + TypeScript).
 
 ## 🚀 Features
 
-- **Multi-User Support**: Independent Shopify store connections per user
-- **Role-Based Access**: Admin and user roles with proper authorization
-- **Shopify Integration**: Complete OAuth flow, order management, product sync
-- **Real-Time Data**: Live synchronization with Shopify stores
-- **Admin Dashboard**: User management, push history, system monitoring
-- **Secure Authentication**: JWT-based auth with bcrypt password hashing
-- **Scalable Architecture**: MongoDB with optimized schemas and indexes
+- **Multi-site management**: Connect and manage multiple websites per user (primary site support)
+- **Dual platform support**: WooCommerce (WordPress REST API) and Shopify (OAuth + proxy) in one dashboard
+- **Inventory and price sync**: Import, process, and push stock/price updates across connected sites
+- **Order viewing (platform-appropriate)**: Fetch and review orders where supported
+- **Push history and audit**: Track all sync/push jobs with detailed logs and summaries
+- **Workflow control**: Toggle processing steps and customize workflow behavior
+- **Role-based access**: Admin and user roles with scoped capabilities
+- **Secure auth**: JWT-based authentication with bcrypt password hashing
+- **Scalable backend**: MongoDB with Mongoose models and indexing
+- **CORS and rate limiting**: Production-friendly server configuration
+
+## Platform Support
+
+- **WooCommerce (WordPress)**: Connect using site URL, consumer key, and consumer secret.
+- **Shopify**: Connect using an OAuth flow initiated from the app; the frontend calls a backend proxy for Shopify Admin API to avoid CORS.
 
 ## 🛠 Tech Stack
 
@@ -28,9 +34,18 @@ A comprehensive multi-user e-commerce management platform with Shopify integrati
 - **Rate Limiting** and CORS protection
 
 ### External Integrations
-- **Shopify REST API** with OAuth 2.0
+- **WooCommerce (WordPress) REST API** via consumer key/secret
+- **Shopify REST API** via OAuth 2.0 using a backend proxy to avoid CORS
 - **MongoDB Atlas** for cloud database
-- **Webhook Support** for real-time updates
+- **Webhook-ready** endpoints (extendable) for real-time updates
+
+## Typical Workflow
+
+1. **Connect sites**: Admin adds websites per user (WooCommerce via keys; Shopify via OAuth).
+2. **Process data**: Upload and process stock/price spreadsheets in the app.
+3. **Review preview**: Verify calculated changes and mappings.
+4. **Push updates**: Send inventory/price changes to the selected platform(s).
+5. **Audit**: Review push history and sync summaries in admin dashboards.
 
 ## 📁 Project Structure
 
