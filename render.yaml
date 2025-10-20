@@ -1,0 +1,40 @@
+services:
+  # Backend API Service
+  - type: web
+    name: ecommanager-api
+    env: node
+    plan: free
+    buildCommand: cd server && npm install && npm run build
+    startCommand: cd server && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SHOPIFY_CLIENT_ID
+        sync: false
+      - key: SHOPIFY_CLIENT_SECRET
+        sync: false
+      - key: SHOPIFY_WEBHOOK_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://ecommanager-frontend.onrender.com
+
+  # Frontend Static Site
+  - type: web
+    name: ecommanager-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: VITE_API_URL
+        value: https://ecommanager-api.onrender.com
+      - key: VITE_SHOPIFY_CLIENT_ID
+        sync: false
