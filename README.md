@@ -38,23 +38,27 @@ A comprehensive multi-user e-commerce management platform with Shopify integrati
 
 ```
 ecommanager/
-├── components/              # React components
-│   ├── admin/              # Admin-specific components
-│   ├── auth/               # Authentication components
-│   ├── shopify/            # Shopify integration components
-│   └── common/             # Shared components
-├── server/                 # Backend API
+├── .env                    # Frontend environment variables (gitignored)
+├── .env.example           # Frontend environment template
+├── components/             # React components
+│   ├── admin/             # Admin-specific components
+│   ├── auth/              # Authentication components
+│   ├── shopify/           # Shopify integration components
+│   └── common/            # Shared components
+├── server/                # Backend API
+│   ├── .env              # Backend environment variables (gitignored)
+│   ├── .env.example      # Backend environment template
 │   ├── src/
-│   │   ├── controllers/    # Route controllers
-│   │   ├── models/         # MongoDB models
-│   │   ├── routes/         # API routes
-│   │   ├── middleware/     # Custom middleware
-│   │   └── services/       # Business logic
-│   └── dist/               # Compiled JavaScript
-├── services/               # Frontend API services
-├── types/                  # TypeScript type definitions
-├── render.yaml            # Render deployment config
-└── DEPLOYMENT.md          # Deployment instructions
+│   │   ├── models/        # MongoDB models
+│   │   ├── routes/        # API routes
+│   │   ├── middleware/    # Custom middleware
+│   │   └── index.ts       # Server entry point
+│   └── dist/              # Compiled JavaScript
+├── services/              # Frontend API services
+├── types/                 # TypeScript type definitions
+├── render.yaml           # Render deployment config
+├── ENV_SETUP.md          # Environment setup guide
+└── DEPLOYMENT.md         # Deployment instructions
 ```
 
 ## 🚀 Quick Start
@@ -89,8 +93,11 @@ ecommanager/
    cp .env.example .env
    cp server/.env.example server/.env
    
-   # Edit with your actual values
+   # Edit .env with frontend config (VITE_API_URL)
+   # Edit server/.env with backend config (MONGO_URI, JWT_SECRET, etc.)
    ```
+   
+   See `ENV_SETUP.md` for detailed configuration instructions.
 
 4. **Start development servers**
    ```bash
@@ -103,8 +110,8 @@ ecommanager/
    ```
 
 5. **Access the application**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:3001
+   - Frontend: http://localhost:3000 (Vite dev server)
+   - Backend API: http://localhost:3002
 
 ## 🌐 Deployment
 
@@ -125,23 +132,44 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment instructions and al
 
 ## 🔧 Environment Variables
 
-### Frontend (.env)
+This project uses **separate** `.env` files for frontend and backend.
+
+### Frontend (`.env` in root)
 ```env
-VITE_API_URL=http://localhost:3001
-VITE_SHOPIFY_CLIENT_ID=your_shopify_client_id
+# Backend API URL (must use VITE_ prefix for Vite)
+VITE_API_URL=http://localhost:3002/api
+
+# Optional: Gemini API for AI features
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
-### Backend (server/.env)
+### Backend (`server/.env`)
 ```env
+# Database
+MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/ecommanager
+
+# Server Configuration
+PORT=3002
 NODE_ENV=development
-PORT=3001
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/ecommanager
+
+# Security
 JWT_SECRET=your_super_secure_jwt_secret
-SHOPIFY_CLIENT_ID=your_shopify_client_id
-SHOPIFY_CLIENT_SECRET=your_shopify_client_secret
-SHOPIFY_WEBHOOK_SECRET=your_webhook_secret
-FRONTEND_URL=http://localhost:5173
+
+# Shopify OAuth
+SHOPIFY_API_KEY=your_shopify_api_key
+SHOPIFY_API_SECRET=your_shopify_api_secret
+APP_URL=http://localhost:3002
+
+# Optional: Default Seed Passwords
+DEFAULT_ADMIN_PASSWORD=admin_password
+DEFAULT_USER_PASSWORD=user_password
 ```
+
+**Important:**
+- Frontend variables **must** use `VITE_` prefix (Vite requirement)
+- Both files are gitignored - use `.env.example` as templates
+- Restart servers after changing environment variables
+- See `ENV_SETUP.md` for detailed setup instructions
 
 ## 🔐 Security Features
 

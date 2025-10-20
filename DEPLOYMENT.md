@@ -6,12 +6,26 @@ This guide covers deploying the EcomManager full-stack application to various ho
 ## Project Structure
 ```
 ecommanager/
-├── client/                 # React frontend (Vite)
-├── server/                 # Node.js backend (Express + TypeScript)
-├── render.yaml            # Render deployment config
-├── Dockerfile             # Docker configuration
-└── DEPLOYMENT.md          # This file
+├── .env                   # Frontend environment variables (gitignored)
+├── .env.example          # Frontend environment template
+├── server/
+│   ├── .env              # Backend environment variables (gitignored)
+│   ├── .env.example      # Backend environment template
+│   └── src/              # Node.js backend (Express + TypeScript)
+├── render.yaml           # Render deployment config
+├── Dockerfile            # Docker configuration
+├── ENV_SETUP.md          # Environment setup guide
+└── DEPLOYMENT.md         # This file
 ```
+
+## Environment Variables Overview
+
+This project uses **separate** `.env` files for frontend and backend:
+
+- **Frontend** (`ecommanager/.env`): Contains `VITE_` prefixed variables for Vite
+- **Backend** (`ecommanager/server/.env`): Contains server, database, and API configurations
+
+See `ENV_SETUP.md` for detailed setup instructions.
 
 ## Prerequisites
 
@@ -26,9 +40,9 @@ ecommanager/
 1. Create Shopify Partner account
 2. Create new app in Partner Dashboard
 3. Note down:
-   - Client ID
-   - Client Secret
-   - Webhook Secret
+   - Client ID - your_shopify_client_id
+   - Client Secret - your_shopify_client_secret
+   - Webhook Secret - your_shopify_webhook_secret
 4. Set redirect URLs for OAuth
 
 ## Deployment Options
@@ -59,28 +73,58 @@ git push origin main
 3. Render will automatically detect `render.yaml` and create services
 
 #### 3. Configure Environment Variables
-Set these in Render Dashboard for **Backend Service**:
-```
+
+**Backend Service** (`ecommanager-backend`):
+Create `server/.env` or set in Render Dashboard:
+```env
+# Server Configuration
 NODE_ENV=production
-PORT=10000
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/ecommanager
+PORT=3002
+
+# Database
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/ecommanager
+
+# Security
 JWT_SECRET=your_super_secure_jwt_secret_here
-SHOPIFY_CLIENT_ID=your_shopify_client_id
-SHOPIFY_CLIENT_SECRET=your_shopify_client_secret
-SHOPIFY_WEBHOOK_SECRET=your_shopify_webhook_secret
-FRONTEND_URL=https://ecommanager-frontend.onrender.com
+
+# Shopify OAuth
+SHOPIFY_API_KEY=your_shopify_api_key
+SHOPIFY_API_SECRET=your_shopify_api_secret
+APP_URL=https://ecommanager-backend.onrender.com
+
+# Optional: Default Passwords for Seeding
+DEFAULT_ADMIN_PASSWORD=secure_admin_password
+DEFAULT_USER_PASSWORD=secure_user_password
 ```
 
-Set these for **Frontend Service**:
+**Frontend Service** (`ecommanager-frontend`):
+Create `.env` or set in Render Dashboard:
+```env
+# Backend API URL (must use VITE_ prefix for Vite)
+VITE_API_URL=https://ecommanager-backend.onrender.com/api
+
+# Optional: Gemini API for AI features
+GEMINI_API_KEY=your_gemini_api_key
 ```
-VITE_API_URL=https://ecommanager-api.onrender.com
-VITE_SHOPIFY_CLIENT_ID=your_shopify_client_id
-```
+
+**Important Notes:**
+- Frontend variables MUST use `VITE_` prefix (Vite requirement)
+- Backend loads from `server/.env` file
+- Both `.env` files are gitignored - use `.env.example` as templates
 
 #### 4. Deploy
 - Services will auto-deploy on git push
-- Backend: `https://ecommanager-api.onrender.com`
+- Backend: `https://ecommanager-backend.onrender.com`
 - Frontend: `https://ecommanager-frontend.onrender.com`
+
+**First-Time Setup:**
+1. Copy environment templates:
+   ```bash
+   cp .env.example .env
+   cp server/.env.example server/.env
+   ```
+2. Edit both `.env` files with your actual credentials
+3. Restart both frontend and backend servers
 
 ### Render Limitations (Free Tier):
 - Services sleep after 15 minutes of inactivity

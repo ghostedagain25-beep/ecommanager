@@ -1,0 +1,51 @@
+================================================
+  ENVIRONMENT SETUP - QUICK START GUIDE
+================================================
+
+STEP 1: Setup Frontend Environment
+-----------------------------------
+1. In the ROOT folder (ecommanager/):
+   - Copy .env.example to .env
+   - Edit .env and set:
+     VITE_API_URL=https://ecommanager-backend.onrender.com/api
+
+STEP 2: Setup Backend Environment
+----------------------------------
+1. In the SERVER folder (ecommanager/server/):
+   - Copy .env.example to .env
+   - Edit .env and set your actual values:
+     * MONGO_URI (your MongoDB connection string)
+     * JWT_SECRET (a secure random string)
+     * PORT=3002
+     * Other optional variables
+
+STEP 3: Install Dependencies
+-----------------------------
+Frontend:
+  npm install
+
+Backend:
+  cd server
+  npm install
+
+STEP 4: Run the Application
+----------------------------
+Terminal 1 (Backend):
+  cd server
+  npm run dev
+
+Terminal 2 (Frontend):
+  npm run dev
+
+================================================
+  IMPORTANT NOTES
+================================================
+
+✓ Frontend .env is at: ecommanager/.env
+✓ Backend .env is at: ecommanager/server/.env
+✓ Both are separate and independent
+✓ Both are gitignored (won't be committed)
+✓ Frontend uses VITE_ prefix for variables
+✓ Restart servers after changing .env files
+
+For more details, see ENV_SETUP.md

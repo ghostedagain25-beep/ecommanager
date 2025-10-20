@@ -1,7 +1,7 @@
 import type { Website } from '../types/index';
 
 // Backend API base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
 
 /**
  * Handles API responses, parsing JSON and throwing a standardized error for non-ok responses.

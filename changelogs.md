@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.8.0] - 2025-01-20
+
+### Changed
+- **Environment Variable Separation**: Separated `.env` configuration into frontend-specific (`ecommanager/.env`) and backend-specific (`ecommanager/server/.env`) files for better organization and security.
+  - Frontend now uses `VITE_API_URL` instead of `REACT_APP_API_URL` for Vite compatibility
+  - Backend maintains its own `.env` file in the `server/` directory
+  - Created separate `.env.example` templates for both frontend and backend
+  - Updated `apiClient.ts` to use `import.meta.env.VITE_API_URL` instead of `process.env.REACT_APP_API_URL`
+
+### Added
+- **Environment Documentation**: Created comprehensive environment setup guides:
+  - `ENV_SETUP.md` - Detailed environment variable configuration guide
+  - `SETUP_INSTRUCTIONS.txt` - Quick start guide for setting up environment files
+  - `server/.env.example` - Backend environment variable template
+  
+### Fixed
+- **API Connection Issues**: Fixed "failed to fetch data" errors caused by inconsistent environment variable naming between `api.ts` and `apiClient.ts`
+- **Environment Variable Loading**: Corrected backend `.env` path loading in `server/src/index.ts` to properly load from `server/.env`
+
 ## [1.7.0] - 2023-11-01
 
 ### Fixed
