@@ -1,0 +1,50 @@
+services:
+  # Backend API Service
+  - type: web
+    name: ecommanager-backend
+    env: node
+    plan: free
+    buildCommand: cd server && npm install && npm run build
+    startCommand: cd server && npm start
+    healthCheckPath: /api/health
+    envVars:
+      # Server Configuration
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3002
+      
+      # Database
+      - key: MONGO_URI
+        sync: false
+      
+      # Security
+      - key: JWT_SECRET
+        generateValue: true
+      
+      # Shopify OAuth
+      - key: SHOPIFY_API_KEY
+        sync: false
+      - key: SHOPIFY_API_SECRET
+        sync: false
+      - key: APP_URL
+        value: https://ecommanager-backend.onrender.com
+      
+      # Default Seed Passwords (optional)
+      - key: DEFAULT_ADMIN_PASSWORD
+        sync: false
+      - key: DEFAULT_USER_PASSWORD
+        sync: false
+
+  # Frontend Static Site
+  - type: web
+    name: ecommanager-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    envVars:
+      # Backend API URL (must use VITE_ prefix for Vite)
+      - key: VITE_API_URL
+        value: https://ecommanager-backend.onrender.com/api
