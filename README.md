@@ -51,27 +51,35 @@ A multi-tenant e-commerce operations manager for multiple websites with first-cl
 
 ```
 ecommanager/
-├── .env                    # Frontend environment variables (gitignored)
-├── .env.example           # Frontend environment template
-├── components/             # React components
-│   ├── admin/             # Admin-specific components
-│   ├── auth/              # Authentication components
-│   ├── shopify/           # Shopify integration components
-│   └── common/            # Shared components
-├── server/                # Backend API
-│   ├── .env              # Backend environment variables (gitignored)
-│   ├── .env.example      # Backend environment template
+├── client/                # Frontend application
+│   ├── .env              # Frontend environment variables (gitignored)
+│   ├── .env.example      # Frontend environment template
+│   ├── components/        # React components
+│   │   ├── admin/        # Admin-specific components
+│   │   ├── auth/         # Authentication components
+│   │   ├── shopify/      # Shopify integration components
+│   │   └── common/       # Shared components
+│   ├── services/         # Frontend API services
+│   ├── types/            # TypeScript type definitions
+│   ├── App.tsx           # Main application component
+│   ├── index.tsx         # Application entry point
+│   ├── package.json      # Frontend dependencies
+│   ├── vite.config.ts    # Vite configuration
+│   └── dist/             # Built frontend (generated)
+├── server/               # Backend API
+│   ├── .env             # Backend environment variables (gitignored)
+│   ├── .env.example     # Backend environment template
 │   ├── src/
-│   │   ├── models/        # MongoDB models
-│   │   ├── routes/        # API routes
-│   │   ├── middleware/    # Custom middleware
-│   │   └── index.ts       # Server entry point
-│   └── dist/              # Compiled JavaScript
-├── services/              # Frontend API services
-├── types/                 # TypeScript type definitions
-├── render.yaml           # Render deployment config
-├── ENV_SETUP.md          # Environment setup guide
-└── DEPLOYMENT.md         # Deployment instructions
+│   │   ├── models/       # MongoDB models
+│   │   ├── routes/       # API routes
+│   │   ├── middleware/   # Custom middleware
+│   │   └── index.ts      # Server entry point
+│   ├── package.json     # Backend dependencies
+│   └── dist/            # Compiled JavaScript (generated)
+├── render.yaml          # Render deployment config
+├── Dockerfile           # Docker configuration
+├── ENV_SETUP.md         # Environment setup guide
+└── DEPLOYMENT.md        # Deployment instructions
 ```
 
 ## 🚀 Quick Start
@@ -92,7 +100,9 @@ ecommanager/
 2. **Install dependencies**
    ```bash
    # Install frontend dependencies
+   cd client
    npm install
+   cd ..
    
    # Install backend dependencies
    cd server
@@ -103,10 +113,10 @@ ecommanager/
 3. **Set up environment variables**
    ```bash
    # Copy example files
-   cp .env.example .env
+   cp client/.env.example client/.env
    cp server/.env.example server/.env
    
-   # Edit .env with frontend config (VITE_API_URL)
+   # Edit client/.env with frontend config (VITE_API_URL)
    # Edit server/.env with backend config (MONGO_URI, JWT_SECRET, etc.)
    ```
    
@@ -119,6 +129,7 @@ ecommanager/
    npm run dev
    
    # Terminal 2: Start frontend
+   cd client
    npm run dev
    ```
 
@@ -147,7 +158,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment instructions and al
 
 This project uses **separate** `.env` files for frontend and backend.
 
-### Frontend (`.env` in root)
+### Frontend (`client/.env`)
 ```env
 # Backend API URL (must use VITE_ prefix for Vite)
 VITE_API_URL=http://localhost:3002/api
@@ -234,13 +245,14 @@ DEFAULT_USER_PASSWORD=user_password
 
 ```bash
 # Run frontend tests
+cd client
 npm test
 
 # Run backend tests
 cd server
 npm test
 
-# Run integration tests
+# Run integration tests (if configured)
 npm run test:integration
 ```
 
