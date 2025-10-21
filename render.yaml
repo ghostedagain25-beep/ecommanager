@@ -40,7 +40,6 @@ services:
   - type: web
     name: ecommanager-frontend
     env: static
-    plan: free
     buildCommand: cd client && npm install && npm run build
     staticPublishPath: ./client/dist
     pullRequestPreviewsEnabled: false
