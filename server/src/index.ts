@@ -9,6 +9,7 @@ import websiteRoutes from './routes/websites';
 import workflowRoutes from './routes/workflow';
 import syncsRoutes from './routes/syncs';
 import adminRoutes from './routes/admin';
+import superadminRoutes from './routes/superadmin';
 import { seedDatabase } from './seed';
 import pushesRoutes from './routes/pushes';
 import shopifyAuthRoutes from './routes/shopify-auth';
@@ -17,11 +18,38 @@ import shopifyAuthRoutes from './routes/shopify-auth';
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ 
+  limit: '100mb'  // Increased to 100mb for very large sync operations
+}));
+app.use(express.urlencoded({ 
+  limit: '100mb', 
+  extended: true,
+  parameterLimit: 50000  // Increase parameter limit for complex form data
+}));
+
+// Set timeout for large requests
+app.use((req, res, next) => {
+  // Increase timeout for sync endpoints
+  if (req.path.includes('/syncs') || req.path.includes('/pushes')) {
+    req.setTimeout(300000); // 5 minutes for sync operations
+    res.setTimeout(300000);
+  }
+  next();
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        version: '1.0.0',
+        environment: process.env.NODE_ENV || 'development'
+    });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -30,6 +58,7 @@ app.use('/api/websites', websiteRoutes);
 app.use('/api/workflow', workflowRoutes);
 app.use('/api/syncs', syncsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/superadmin', superadminRoutes);
 app.use('/api/pushes', pushesRoutes);
 app.use('/api/shopify-auth', shopifyAuthRoutes);
 

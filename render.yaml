@@ -41,8 +41,8 @@ services:
     name: ecommanager-frontend
     env: static
     plan: free
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: ./client/dist
     pullRequestPreviewsEnabled: false
     envVars:
       # Backend API URL (must use VITE_ prefix for Vite)

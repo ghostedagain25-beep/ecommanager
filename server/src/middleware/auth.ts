@@ -41,9 +41,25 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
 };
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-    if (req.user && req.user.role === 'admin') {
+    if (req.user && (req.user.role === 'admin' || req.user.role === 'superadmin')) {
         next();
     } else {
         res.status(403).json({ message: 'Not authorized as an admin' });
+    }
+};
+
+export const isSuperAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (req.user && req.user.role === 'superadmin') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Not authorized as a superadmin' });
+    }
+};
+
+export const isAdminOrSuperAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (req.user && (req.user.role === 'admin' || req.user.role === 'superadmin')) {
+        next();
+    } else {
+        res.status(403).json({ message: 'Not authorized as an admin or superadmin' });
     }
 };

@@ -9,11 +9,13 @@ lerna-debug.log*
 
 # Dependencies
 node_modules
+client/node_modules
 server/node_modules
 
 # Build outputs
 dist
 dist-ssr
+client/dist
 server/dist
 build
 
@@ -22,6 +24,9 @@ build
 .env.local
 .env.production
 .env.staging
+client/.env
+client/.env.local
+client/.env.production
 server/.env
 server/.env.local
 server/.env.production
@@ -106,3 +111,11 @@ Desktop.ini
 
 # Local development
 *.local
+
+# (AI Agent instruction files are tracked)
+
+# Development and testing files
+test-*.js
+test-*.ts
+debug-*.log
+*.test.local

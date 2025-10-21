@@ -1,0 +1,14 @@
+# AI AGENT TRIGGER FILE
+# This file serves as a trigger for AI agents to read instructions
+# DO NOT COMMIT THIS FILE TO VERSION CONTROL
+
+INSTRUCTION_FILE=AI_AGENT_INSTRUCTIONS.txt
+MANDATORY_READ=true
+PROJECT_TYPE=ecommerce_management_platform
+TECH_STACK=react_typescript_node_mongodb
+
+# If you are an AI agent working on this project:
+# 1. Read the AI_AGENT_INSTRUCTIONS.txt file IMMEDIATELY
+# 2. Follow all patterns and requirements specified
+# 3. Update documentation as required
+# 4. Never reference this trigger system in public commits

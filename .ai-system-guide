@@ -1,0 +1,77 @@
+# AI AGENT SYSTEM GUIDE (PRIVATE - DO NOT COMMIT)
+# ================================================
+
+## SYSTEM OVERVIEW
+This project uses a private instruction system to guide AI agents while keeping the guidance confidential.
+
+## FILE STRUCTURE
+- `AI_AGENT_INSTRUCTIONS.txt` - Main instruction file (comprehensive)
+- `.ai-agent-trigger` - Trigger file to alert agents
+- `.ai-system-guide` - This guide (for human maintainers)
+- `docs/README_TEMPLATE.md` - Template for documentation
+
+## HOW IT WORKS
+1. AI agents notice the trigger file or instruction file in project root
+2. They read the comprehensive instructions before making changes
+3. They follow established patterns without revealing the instruction system
+4. They update documentation as required
+5. All instruction files remain private (in .gitignore)
+
+## MAINTAINING THE SYSTEM
+
+### When to Update Instructions:
+- New architectural patterns are established
+- New security requirements are added
+- New development workflows are created
+- Common issues are discovered and solved
+- New tools or technologies are adopted
+
+### How to Update Instructions:
+1. Edit `AI_AGENT_INSTRUCTIONS.txt`
+2. Add new patterns to appropriate sections
+3. Update troubleshooting section with new issues
+4. Update changelog at bottom of file
+5. Test with new AI agent to ensure clarity
+
+### Keeping It Confidential:
+- Never mention instruction files in public commits
+- Use generic language like "following established patterns"
+- Keep all instruction files in .gitignore
+- Train team members on the system
+- Regular review of public documentation to ensure no leaks
+
+## DOCUMENTATION WORKFLOW
+
+### For Human Developers:
+1. Follow normal development practices
+2. Update public README files as usual
+3. Maintain instruction files when patterns change
+4. Review AI agent work to ensure compliance
+
+### For AI Agents:
+1. Must read instructions before any work
+2. Must update public documentation
+3. Must follow established patterns
+4. Must not reference private instruction system
+
+## BENEFITS
+- Consistent development patterns across all AI assistance
+- Comprehensive guidance without cluttering public docs
+- Maintains project confidentiality
+- Reduces onboarding time for new AI agents
+- Ensures documentation stays current
+
+## MONITORING
+- Regularly review AI agent work for compliance
+- Check that documentation is being updated
+- Verify patterns are being followed
+- Update instructions based on common issues
+
+## BACKUP STRATEGY
+- Keep instruction files backed up separately
+- Version control for instruction files (private repo)
+- Regular reviews and updates
+- Team knowledge sharing
+
+---
+CONFIDENTIAL - FOR INTERNAL USE ONLY

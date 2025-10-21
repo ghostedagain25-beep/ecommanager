@@ -2,14 +2,31 @@ import express from 'express';
 import { User } from '../models/User';
 import { Website } from '../models/Website';
 import { UserMenuSettings } from '../models/UserMenuSettings';
-import { protect, isAdmin } from '../middleware/auth';
+import { protect, isAdmin, isSuperAdmin, isAdminOrSuperAdmin } from '../middleware/auth';
 
 const router = express.Router();
 
-// GET all users (with website count)
-router.get('/', protect, isAdmin, async (req, res) => {
+// GET all users (with website count) - filtered by role hierarchy
+router.get('/', protect, isAdminOrSuperAdmin, async (req, res) => {
     try {
-        const users = await User.find({});
+        let userQuery = {};
+        
+        // SuperAdmin can see all users
+        if (req.user?.role === 'superadmin') {
+            userQuery = {};
+        } 
+        // Admin can only see users they created or are assigned to manage
+        else if (req.user?.role === 'admin') {
+            userQuery = {
+                $or: [
+                    { createdBy: req.user.username },
+                    { assignedAdmins: req.user.username },
+                    { role: 'user' } // For backward compatibility
+                ]
+            };
+        }
+
+        const users = await User.find(userQuery);
         const websitesCount = await Website.aggregate([
             { $group: { _id: '$user_username', count: { $sum: 1 } } }
         ]);
@@ -27,7 +44,7 @@ router.get('/', protect, isAdmin, async (req, res) => {
 });
 
 // POST a new user
-router.post('/', protect, isAdmin, async (req, res) => {
+router.post('/', protect, isAdminOrSuperAdmin, async (req, res) => {
     try {
         const { username, password, role, syncsRemaining, maxWebsites } = req.body;
         const userExists = await User.findOne({ username });
@@ -36,9 +53,27 @@ router.post('/', protect, isAdmin, async (req, res) => {
             return res.status(409).json({ message: 'Username already exists' });
         }
 
-        const user = new User({ username, password, role, syncsRemaining, maxWebsites });
+        // Only superadmin can create admin users
+        if (role === 'admin' && req.user?.role !== 'superadmin') {
+            return res.status(403).json({ message: 'Only superadmin can create admin users' });
+        }
+
+        const user = new User({ 
+            username, 
+            password, 
+            role: role || 'user', 
+            syncsRemaining: syncsRemaining || 10, 
+            maxWebsites: maxWebsites || 1,
+            createdBy: req.user?.username,
+            isEmailVerified: true // Admin-created users are pre-verified
+        });
+        
         await user.save();
-        res.status(201).json(user);
+        
+        const userObject = user.toObject();
+        delete userObject.password;
+        
+        res.status(201).json(userObject);
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
     }

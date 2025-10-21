@@ -5,8 +5,8 @@ Write-Host "🚀 EcomManager Deployment Preparation" -ForegroundColor Green
 Write-Host "======================================" -ForegroundColor Green
 
 # Check if we're in the right directory
-if (-not (Test-Path "package.json")) {
-    Write-Host "❌ Error: package.json not found. Please run this script from the project root." -ForegroundColor Red
+if (-not (Test-Path "client\package.json")) {
+    Write-Host "❌ Error: client/package.json not found. Please run this script from the project root." -ForegroundColor Red
     exit 1
 }
 
@@ -27,10 +27,10 @@ foreach ($file in $requiredFiles) {
 # Check environment files
 Write-Host ""
 Write-Host "🔧 Checking environment configuration..." -ForegroundColor Yellow
-if (Test-Path ".env.example") {
-    Write-Host "   ✅ .env.example exists" -ForegroundColor Green
+if (Test-Path "client\.env.example") {
+    Write-Host "   ✅ client\.env.example exists" -ForegroundColor Green
 } else {
-    Write-Host "   ❌ .env.example missing" -ForegroundColor Red
+    Write-Host "   ❌ client\.env.example missing" -ForegroundColor Red
 }
 
 if (Test-Path "server\.env.example") {
@@ -42,10 +42,10 @@ if (Test-Path "server\.env.example") {
 # Check if dependencies are installed
 Write-Host ""
 Write-Host "📦 Checking dependencies..." -ForegroundColor Yellow
-if (Test-Path "node_modules") {
+if (Test-Path "client\node_modules") {
     Write-Host "   ✅ Frontend dependencies installed" -ForegroundColor Green
 } else {
-    Write-Host "   ⚠️  Frontend dependencies not installed. Run: npm install" -ForegroundColor Yellow
+    Write-Host "   ⚠️  Frontend dependencies not installed. Run: cd client && npm install" -ForegroundColor Yellow
 }
 
 if (Test-Path "server\node_modules") {
@@ -60,10 +60,13 @@ Write-Host "🔨 Testing build process..." -ForegroundColor Yellow
 Write-Host "   Testing frontend build..." -ForegroundColor Cyan
 
 try {
+    Push-Location client
     $null = npm run build 2>$null
     Write-Host "   ✅ Frontend builds successfully" -ForegroundColor Green
+    Pop-Location
 } catch {
     Write-Host "   ❌ Frontend build failed" -ForegroundColor Red
+    Pop-Location
 }
 
 Write-Host "   Testing backend build..." -ForegroundColor Cyan

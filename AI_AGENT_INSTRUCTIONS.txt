@@ -1,0 +1,424 @@
+# AI AGENT INSTRUCTIONS FOR ECOMMANAGER PROJECT - ENHANCED VERSION
+# ================================================================
+# This file contains comprehensive instructions for AI agents working on the EcomManager project.
+# Keep this file updated with new requirements and patterns as the project evolves.
+
+## ⚠️ CRITICAL: MANDATORY FIRST STEPS FOR ANY AI AGENT
+# ====================================================
+# 1. ALWAYS read this entire instruction file BEFORE making any changes
+# 2. ALWAYS check for existing README.md files and update them
+# 3. ALWAYS update documentation when adding new features
+# 4. This instruction file is tracked in version control. Keep it up to date and avoid exposing sensitive values.
+# 5. ALWAYS follow the established patterns and conventions
+
+## PROJECT OVERVIEW
+EcomManager is a comprehensive multi-user e-commerce management platform that supports both Shopify and WooCommerce platforms with role-based access control.
+
+### TECH STACK
+- Frontend: React 19 + TypeScript + Vite
+- Backend: Node.js + Express + MongoDB (Mongoose)
+- Styling: TailwindCSS + custom CSS
+- State Management: React Context (AuthContext, WebsiteContext)
+- Authentication: JWT-based with localStorage persistence
+- Build Tool: Vite with dev server on port 3000
+- API Server: Express on port 3002
+
+
+## Documentation Quick Guide Workflow (MANDATORY)
+- On any documentation or instruction update:
+  1) Consolidate all Markdown documentation into a single public Quick Guide.
+     - Run: node tools/build-quick-guide.js
+     - Output: client/public/quick-guide.html (served at /quick-guide.html)
+  2) Remove all non-essential .md files from the repository.
+     - Keep ONLY the root README.md
+  3) Ensure the Quick Guide does not expose sensitive information:
+     - Redact passwords, tokens, JWT secrets, emails, API keys, MONGO_URI, Shopify keys, etc.
+     - The build-quick-guide script already scrubs typical patterns; double-check before release.
+  4) Verify navigation has a “Quick Guide” entry for both admin and user roles.
+     - Ensure the Quick Guide view renders correctly inside the app. Opening in a new tab is optional.
+  5) Repeat this workflow after EVERY documentation change.
+
+- Security Requirements:
+  - Never publish default passwords or real environment variables.
+  - All secrets and tokens must be redacted in the guide.
+  - Do not expose internal URLs that are not intended for public use.
+
+## Security Review (REQUIRED)
+- Before committing this file or documentation updates, ensure there are no default passwords, API keys, tokens, or real environment values.
+- Use generic placeholders; never include real credentials or private internal URLs.
+
+## CRITICAL RULES & PATTERNS
+
+### 1. ALWAYS UPDATE BOTH CLIENT AND SERVER
+- When making changes, ALWAYS consider both frontend and backend implications
+- Update both client and server directories for any feature changes
+- Maintain consistency between client and server API contracts
+- Update environment configurations in both .env files
+
+### 2. DOCUMENTATION REQUIREMENTS (MANDATORY)
+- ALWAYS update README.md files when adding new features
+- Create component-specific documentation for complex components
+- Update API documentation when adding/modifying endpoints
+- Maintain changelog in README files
+- Document environment variable changes
+- Create setup instructions for new developers
+
+## Codebase Cleanup & Consolidation (Mandatory)
+- Always remove legacy/duplicate components when a new unified component replaces them.
+- For websites management, use [client/components/admin/website-management/AdminWebsiteManager.tsx](cci:7://file:///c:/Users/Kpac/OneDrive/Desktop/ecommanager/client/components/admin/website-management/AdminWebsiteManager.tsx:0:0-0:0) everywhere. Do not keep parallel views.
+- Remove obsolete files when confirmed unused:
+  - client/components/UserForm.tsx
+  - client/components/admin/user-management/UserForm.tsx
+  - client/components/AdminUserWebsites.tsx (top-level; use the unified admin Website Manager)
+- After consolidation, run a full format/lint pass in both client and server:
+  - Prettier (consistent formatting)
+  - ESLint (dead imports, unused vars, consistent rules)
+- Ensure navigation and routes reflect consolidated components:
+  - Admin websites route → [AdminWebsiteManager](cci:1://file:///c:/Users/Kpac/OneDrive/Desktop/ecommanager/client/components/admin/website-management/AdminWebsiteManager.tsx:8:0-215:2)
+  - User management:
+    - Create new → `NewUserForm.tsx`
+    - Edit existing → `UserEditForm.tsx`
+- Perform a build check:
+  - Client: npm --prefix client run build
+  - Server: npm --prefix server run build
+- Perform a runtime smoke test:
+  - npm run dev (root), verify Admin → User Management → Websites uses [AdminWebsiteManager](cci:1://file:///c:/Users/Kpac/OneDrive/Desktop/ecommanager/client/components/admin/website-management/AdminWebsiteManager.tsx:8:0-215:2)
+
+#### Documentation Files to Maintain:
+- `/README.md` - Main project documentation
+- `/client/README.md` - Frontend-specific documentation
+- `/server/README.md` - Backend-specific documentation
+- `/docs/API.md` - API endpoint documentation (create if doesn't exist)
+- `/docs/SETUP.md` - Development setup guide (create if doesn't exist)
+- Component JSDoc comments for complex components
+
+### 3. FILE STRUCTURE & ORGANIZATION
+- Client components: /client/components/
+- Server routes: /server/src/routes/
+- Shared types: /client/types/ and /server/src/models/
+- Services: /client/services/ and /server/src/services/
+- Context providers: /client/context/
+- Utilities: /client/utils/ and /server/src/utils/
+- Documentation: /docs/ (create if doesn't exist)
+
+### 4. USER & WEBSITE MANAGEMENT PATTERNS
+- Use WebsiteContext for all website-related state management
+- Respect user-website relationships and permissions
+- Admin users can access all websites, regular users only their own
+- Always validate user permissions on both frontend and backend
+- Use proper authorization middleware in server routes
+
+### 5. API PATTERNS
+- Base URL: http://localhost:3002/api (configurable via VITE_API_URL)
+- Always use JWT authentication for protected routes
+- Include proper error handling and status codes
+- Use consistent response formats across all endpoints
+- Implement proper CORS and rate limiting
+- Document all endpoints in /docs/API.md
+
+### 6. COMPONENT PATTERNS
+- Use TypeScript interfaces for all props and data structures
+- Implement proper error boundaries and loading states
+- Use consistent styling with TailwindCSS classes
+- Follow React 19 patterns and hooks
+- Implement proper accessibility features
+- Add JSDoc comments for complex components
+
+### 7. DATABASE & MODEL PATTERNS
+- Use Mongoose schemas with proper validation
+- Implement proper indexing for performance
+- Use consistent field naming conventions
+- Include audit fields (createdAt, updatedAt) where appropriate
+- Handle cascade deletes properly
+
+## SPECIFIC IMPLEMENTATION GUIDELINES
+
+### USER CREATION & MANAGEMENT
+- Fixed admin user creation bug by adding proper async/await keywords
+- Implemented email verification system with nodemailer
+- Created separate NewUserForm and UserEditForm components
+- Added proper username validation and duplicate checking
+- Implemented role-based access control
+
+### WEBSITE SELECTION & CONTEXT
+- Use WebsiteContext for all website-related operations
+- Implement proper user-website filtering
+- Support multi-website selection for users
+- Admin users can manage all users' websites
+- Regular users only see their own websites
+
+### NAVIGATION & ROUTING
+- Role-based navigation menus (admin vs user)
+- Proper route protection and authorization
+- Consistent navigation patterns across components
+- Support for both desktop and mobile navigation
+
+### API CONFIGURATION
+- Centralized API configuration in utils/apiConfig.ts
+- Environment variable validation and fallbacks
+- Health check endpoints for monitoring
+- Proper error handling and retry logic
+
+### ENVIRONMENT CONFIGURATION
+- Client: VITE_API_URL, VITE_APP_NAME, feature flags
+- Server: MONGO_URI, JWT_SECRET, email configuration
+- Proper .env.example files with documentation
+- TypeScript environment variable definitions
+
+## DEBUGGING & TROUBLESHOOTING PATTERNS
+
+### COMMON ISSUES & SOLUTIONS
+1. **Username validation errors**: Check async/await patterns in form handlers
+2. **Website selection not working**: Verify WebsiteContext usage and user permissions
+3. **API connection issues**: Check VITE_API_URL configuration and server port
+4. **Navigation not updating**: Ensure proper state management and re-renders
+5. **Database seeding errors**: Check for duplicate key constraints and proper indexing
+
+### LOGGING & MONITORING
+- Use console.log for development debugging (remove in production)
+- Implement proper error logging on server side
+- Add health check endpoints for monitoring
+- Use proper HTTP status codes for API responses
+
+## SECURITY CONSIDERATIONS
+
+### AUTHENTICATION & AUTHORIZATION
+- Always validate JWT tokens on protected routes
+- Implement proper role-based access control
+- Use secure password hashing (bcrypt)
+- Implement rate limiting and CORS properly
+
+### DATA VALIDATION
+- Validate all input data on both client and server
+- Use proper TypeScript types for type safety
+- Implement proper sanitization for user inputs
+- Use Mongoose schema validation
+
+### ENVIRONMENT SECURITY
+- Never commit .env files to version control
+- Use strong JWT secrets in production
+- Implement proper HTTPS in production
+- Use environment-specific configurations
+
+## TESTING PATTERNS
+
+### MANUAL TESTING CHECKLIST
+1. **User Creation**: Test admin creating new users with various usernames
+2. **Website Selection**: Test website filtering by user permissions
+3. **Navigation**: Test all menu items for both admin and user roles
+4. **API Endpoints**: Test all CRUD operations with proper authentication
+5. **Error Handling**: Test error scenarios and user feedback
+
+### AUTOMATED TESTING (Future Implementation)
+- Unit tests for utility functions
+- Integration tests for API endpoints
+- Component tests for React components
+- End-to-end tests for critical user flows
+
+## CODE QUALITY STANDARDS
+
+### TYPESCRIPT USAGE
+- Use strict TypeScript configuration
+- Define proper interfaces for all data structures
+- Use generic types where appropriate
+- Implement proper error handling with typed errors
+
+### REACT PATTERNS
+- Use functional components with hooks
+- Implement proper dependency arrays in useEffect
+- Use React Context for global state management
+- Follow React 19 best practices
+
+### STYLING PATTERNS
+- Use TailwindCSS for consistent styling
+- Implement responsive design patterns
+- Use consistent color schemes and spacing
+- Follow accessibility guidelines
+
+## DEPLOYMENT CONSIDERATIONS
+
+### DEVELOPMENT ENVIRONMENT
+- Client runs on port 3000 (Vite dev server)
+- Server runs on port 3002 (Express server)
+- MongoDB connection via MONGO_URI
+- Hot reloading enabled for both client and server
+
+### PRODUCTION ENVIRONMENT
+- Build client with `npm run build`
+- Use environment-specific configurations
+- Implement proper logging and monitoring
+- Use HTTPS and secure headers
+
+## MAINTENANCE & UPDATES
+
+### REGULAR MAINTENANCE TASKS
+- Update dependencies regularly
+- Review and update security configurations
+- Monitor database performance and indexing
+- Review and update API documentation
+- Update README files with new features
+- Maintain changelog in documentation
+
+### VERSION CONTROL PATTERNS
+- Use meaningful commit messages
+- Create feature branches for new functionality
+- Use pull requests for code review
+- Tag releases with semantic versioning
+- Do NOT commit secrets or sensitive values in documentation or instruction files
+
+## DOCUMENTATION WORKFLOW (MANDATORY)
+
+### WHEN ADDING NEW FEATURES:
+1. **Before coding**: Check if documentation exists for similar features
+2. **During coding**: Add JSDoc comments for complex functions
+3. **After coding**: Update relevant README.md files
+4. **Before committing**: Ensure all documentation is updated
+
+### DOCUMENTATION CHECKLIST:
+- [ ] Updated main README.md with new feature description
+- [ ] Updated component-specific documentation if applicable
+- [ ] Added/updated API documentation for new endpoints
+- [ ] Updated environment variable documentation
+- [ ] Added setup instructions for new dependencies
+- [ ] Updated troubleshooting section if new issues discovered
+
+### README.md STRUCTURE REQUIREMENTS:
+```markdown
+# Project/Component Name
+Brief description
+
+## Features
+- List of key features
+
+## Setup/Installation
+Step-by-step setup instructions
+
+## Usage
+How to use the component/feature
+
+## API Endpoints (if applicable)
+List of endpoints with examples
+
+## Environment Variables
+Required environment variables
+
+## Troubleshooting
+Common issues and solutions
+
+## Changelog
+Recent changes and updates
+```
+
+## PRIVATE INSTRUCTION SYSTEM
+
+### KEEPING INSTRUCTIONS APPROPRIATE FOR PUBLIC REPO:
+1. Use neutral phrasing like "following established patterns" in public commits and docs.
+2. Do not include secrets or private values; use placeholders.
+3. Keep instruction content focused on processes and patterns.
+4. Maintain separate public documentation that is user-friendly and free of sensitive details.
+
+### INSTRUCTION FILE NAMING CONVENTIONS:
+- `AI_AGENT_INSTRUCTIONS.txt` - Main instruction file (tracked)
+- `*_INSTRUCTIONS.txt` - Feature-specific instructions (tracked if needed; do not include secrets)
+- `*_PROMPTS.txt` - AI prompt templates (tracked if needed; do not include secrets)
+
+### ENSURING AGENTS READ INSTRUCTIONS:
+1. **File naming**: Use obvious names that agents will notice
+2. **File placement**: Keep in project root for visibility
+3. **Content structure**: Start with mandatory reading requirements
+4. **Regular updates**: Keep instructions current with project changes
+
+## TROUBLESHOOTING COMMON ERRORS
+
+### "Username already exists" Bug
+- Check async/await in form validation handlers
+- Verify API endpoint returns correct status codes
+- Ensure proper error handling in frontend
+
+### Website Selection Issues
+- Verify WebsiteContext is properly wrapped around components
+- Check user permissions and filtering logic
+- Ensure proper API authorization
+
+### Navigation Not Working
+- Check role-based navigation filtering
+- Verify route definitions and component imports
+- Ensure proper state management for active views
+
+### API Connection Failures
+- Verify VITE_API_URL configuration
+- Check server is running on correct port
+- Verify CORS configuration allows client origin
+
+## FUTURE ENHANCEMENTS
+
+### PLANNED FEATURES
+- Enhanced email verification system
+- Advanced user role management
+- Improved website synchronization
+- Better error reporting and logging
+- Performance optimizations
+
+### TECHNICAL DEBT
+- Implement comprehensive testing suite
+- Improve error handling consistency
+- Optimize database queries
+- Enhance security measures
+
+## NOTES FOR AI AGENTS
+
+### WHEN WORKING ON THIS PROJECT:
+1. **ALWAYS read this file first** to understand patterns and requirements
+2. **Follow the established code patterns** and conventions
+3. **Update both client and server** when making changes
+4. **Update documentation** for any new features or changes
+5. **Test changes thoroughly** before considering them complete
+6. **Update this instruction file** when adding new patterns or requirements
+7. **Never reference these instructions** in public commits or documentation
+
+### COMMON MISTAKES TO AVOID:
+1. Not updating both client and server directories
+2. Forgetting to handle user permissions properly
+3. Not using WebsiteContext for website-related operations
+4. Ignoring TypeScript errors and warnings
+5. Not following established component patterns
+6. **Not updating documentation when adding features**
+7. **Referencing private instruction files in public commits**
+
+### WHEN IN DOUBT:
+1. Check existing similar implementations in the codebase
+2. Refer to the established patterns in this file
+3. Ensure proper error handling and user feedback
+4. Test the changes in both admin and user contexts
+5. Verify API endpoints work correctly with authentication
+6. **Update documentation to reflect changes**
+
+## CONFIDENTIALITY REQUIREMENTS
+
+### NEVER MENTION IN PUBLIC:
+- The existence of this instruction file
+- The private instruction system
+- Specific details about how agents are guided
+- References to "AI agent instructions" or similar terms
+
+### INSTEAD USE PHRASES LIKE:
+- "Following established project patterns"
+- "Maintaining consistency with existing codebase"
+- "Adhering to project conventions"
+- "Following best practices established in the project"
+
+## LAST UPDATED
+Date: October 20, 2025
+Version: 2.0.0 (Enhanced with documentation requirements)
+Updated by: AI Agent (Added documentation workflow and confidentiality requirements)
+
+## CHANGELOG
+- Initial creation with comprehensive project instructions
+- Added user creation bug fixes and patterns
+- Added website selection and context management guidelines
+- Added API configuration and environment setup instructions
+- Added navigation and routing patterns
+- Added security and testing considerations
+- **ENHANCED: Added mandatory documentation requirements**
+- **ENHANCED: Added confidentiality and private instruction system**
+- **ENHANCED: Added README.md maintenance workflow**

@@ -7,8 +7,8 @@ echo "🚀 EcomManager Deployment Preparation"
 echo "======================================"
 
 # Check if we're in the right directory
-if [ ! -f "package.json" ]; then
-    echo "❌ Error: package.json not found. Please run this script from the project root."
+if [ ! -f "client/package.json" ]; then
+    echo "❌ Error: client/package.json not found. Please run this script from the project root."
     exit 1
 fi
 
@@ -29,10 +29,10 @@ done
 # Check environment files
 echo ""
 echo "🔧 Checking environment configuration..."
-if [ -f ".env.example" ]; then
-    echo "   ✅ .env.example exists"
+if [ -f "client/.env.example" ]; then
+    echo "   ✅ client/.env.example exists"
 else
-    echo "   ❌ .env.example missing"
+    echo "   ❌ client/.env.example missing"
 fi
 
 if [ -f "server/.env.example" ]; then
@@ -44,10 +44,10 @@ fi
 # Check if dependencies are installed
 echo ""
 echo "📦 Checking dependencies..."
-if [ -d "node_modules" ]; then
+if [ -d "client/node_modules" ]; then
     echo "   ✅ Frontend dependencies installed"
 else
-    echo "   ⚠️  Frontend dependencies not installed. Run: npm install"
+    echo "   ⚠️  Frontend dependencies not installed. Run: cd client && npm install"
 fi
 
 if [ -d "server/node_modules" ]; then
@@ -60,10 +60,12 @@ fi
 echo ""
 echo "🔨 Testing build process..."
 echo "   Testing frontend build..."
-if npm run build > /dev/null 2>&1; then
+if cd client && npm run build > /dev/null 2>&1; then
     echo "   ✅ Frontend builds successfully"
+    cd ..
 else
     echo "   ❌ Frontend build failed"
+    cd ..
 fi
 
 echo "   Testing backend build..."

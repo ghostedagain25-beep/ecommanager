@@ -3,19 +3,35 @@ import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
   username: string;
+  email?: string;
   password?: string;
-  role: 'admin' | 'user';
+  role: 'superadmin' | 'admin' | 'user';
   syncsRemaining: number;
   maxWebsites: number;
+  isEmailVerified: boolean;
+  emailVerificationToken?: string;
+  emailVerificationExpires?: Date;
+  createdBy?: string; // Username of the admin/superadmin who created this user
+  assignedAdmins?: string[]; // Array of admin usernames assigned to manage this user
+  allowedMenuItems?: string[]; // Array of menu item keys that admin can access
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const UserSchema = new Schema<IUser>({
   username: { type: String, required: true, unique: true, index: true },
+  email: { type: String, sparse: true, unique: true, index: true },
   password: { type: String, required: true, select: false },
-  role: { type: String, required: true, enum: ['admin', 'user'] },
+  role: { type: String, required: true, enum: ['superadmin', 'admin', 'user'] },
   syncsRemaining: { type: Number, required: true, default: 10 },
   maxWebsites: { type: Number, required: true, default: 1 },
+  isEmailVerified: { type: Boolean, default: false },
+  emailVerificationToken: { type: String, select: false },
+  emailVerificationExpires: { type: Date, select: false },
+  createdBy: { type: String, index: true },
+  assignedAdmins: [{ type: String }],
+  allowedMenuItems: [{ type: String }],
+}, {
+  timestamps: true
 });
 
 // Hash password before saving

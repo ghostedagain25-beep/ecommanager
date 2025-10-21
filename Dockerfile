@@ -6,20 +6,20 @@ FROM base AS deps
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY client/package*.json ./client/
 COPY server/package*.json ./server/
-RUN npm ci --only=production && npm cache clean --force
+RUN cd client && npm ci --only=production && npm cache clean --force
 RUN cd server && npm ci --only=production && npm cache clean --force
 
 # Build the application
 FROM base AS builder
 WORKDIR /app
 COPY . .
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/client/node_modules ./client/node_modules
 COPY --from=deps /app/server/node_modules ./server/node_modules
 
 # Build frontend
-RUN npm run build
+RUN cd client && npm run build
 
 # Build backend
 RUN cd server && npm run build
@@ -35,7 +35,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy built application
-COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nextjs:nodejs /app/client/dist ./client/dist
 COPY --from=builder --chown=nextjs:nodejs /app/server/dist ./server/dist
 COPY --from=builder --chown=nextjs:nodejs /app/server/package*.json ./server/
 COPY --from=deps --chown=nextjs:nodejs /app/server/node_modules ./server/node_modules
